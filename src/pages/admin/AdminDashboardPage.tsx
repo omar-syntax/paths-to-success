@@ -53,14 +53,21 @@ export default function AdminDashboardPage() {
         <CardContent>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={statisticsData.weeklyRegistrations} layout="vertical">
+              <BarChart 
+                data={statisticsData.weeklyRegistrations} 
+                layout="vertical"
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" />
                 <YAxis 
                   dataKey="day" 
                   type="category" 
                   stroke="hsl(var(--muted-foreground))"
-                  width={80}
+                  width={100}
+                  tick={{ fill: 'hsl(var(--foreground))', fontSize: 14 }}
+                  tickLine={false}
+                  axisLine={false}
                 />
                 <Tooltip
                   contentStyle={{
