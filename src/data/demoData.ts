@@ -173,17 +173,209 @@ export const notifications: Notification[] = [
   },
 ];
 
-export const registrants = [
-  { id: 'r-1', name: 'أحمد محمد علي', email: 'ahmed@example.com', registrationDate: '2025-01-02', status: 'مسجل', filesCount: 0 },
-  { id: 'r-2', name: 'سارة عبدالله', email: 'sara@example.com', registrationDate: '2025-01-03', status: 'جاري العمل', filesCount: 2 },
-  { id: 'r-3', name: 'محمد خالد', email: 'mohamed@example.com', registrationDate: '2025-01-04', status: 'تم التسليم', filesCount: 5 },
-  { id: 'r-4', name: 'فاطمة حسن', email: 'fatma@example.com', registrationDate: '2025-01-05', status: 'مسجل', filesCount: 0 },
-  { id: 'r-5', name: 'عمر أحمد', email: 'omar@example.com', registrationDate: '2025-01-06', status: 'جاري العمل', filesCount: 3 },
-  { id: 'r-6', name: 'نورا سامي', email: 'noura@example.com', registrationDate: '2025-01-07', status: 'تم التسليم', filesCount: 4 },
-  { id: 'r-7', name: 'يوسف إبراهيم', email: 'youssef@example.com', registrationDate: '2025-01-08', status: 'مسجل', filesCount: 0 },
-  { id: 'r-8', name: 'هدى علي', email: 'hoda@example.com', registrationDate: '2025-01-09', status: 'جاري العمل', filesCount: 1 },
-  { id: 'r-9', name: 'كريم محمود', email: 'karim@example.com', registrationDate: '2025-01-10', status: 'مسجل', filesCount: 0 },
-  { id: 'r-10', name: 'مريم عادل', email: 'mariam@example.com', registrationDate: '2025-01-11', status: 'تم التسليم', filesCount: 6 },
+export interface UploadedFile {
+  id: string;
+  name: string;
+  type: string;
+  size: string;
+  uploadDate: string;
+  url: string;
+}
+
+export interface Registrant {
+  id: string;
+  name: string;
+  nameEn: string;
+  email: string;
+  phone: string;
+  school: string;
+  registrationDate: string;
+  status: 'مسجل' | 'جاري العمل' | 'تم التسليم';
+  filesCount: number;
+  projectId: string;
+  projectTitle: string;
+  projectTitleEn: string;
+  uploadedFiles: UploadedFile[];
+}
+
+export const registrants: Registrant[] = [
+  { 
+    id: 'r-1', 
+    name: 'أحمد محمد علي', 
+    nameEn: 'Ahmed_Mohamed_Ali',
+    email: 'ahmed@example.com', 
+    phone: '+201234567890',
+    school: 'جامعة القاهرة',
+    registrationDate: '2025-01-02', 
+    status: 'مسجل', 
+    filesCount: 0,
+    projectId: 'proj-1',
+    projectTitle: 'مسابقة الذكاء الاصطناعي 2025',
+    projectTitleEn: 'AI_Competition_2025',
+    uploadedFiles: []
+  },
+  { 
+    id: 'r-2', 
+    name: 'سارة عبدالله', 
+    nameEn: 'Sara_Abdullah',
+    email: 'sara@example.com', 
+    phone: '+201234567891',
+    school: 'جامعة عين شمس',
+    registrationDate: '2025-01-03', 
+    status: 'جاري العمل', 
+    filesCount: 2,
+    projectId: 'proj-1',
+    projectTitle: 'مسابقة الذكاء الاصطناعي 2025',
+    projectTitleEn: 'AI_Competition_2025',
+    uploadedFiles: [
+      { id: 'f-1', name: 'project_proposal.pdf', type: 'application/pdf', size: '2.5 MB', uploadDate: '2025-01-05', url: '#' },
+      { id: 'f-2', name: 'team_info.pdf', type: 'application/pdf', size: '1.2 MB', uploadDate: '2025-01-06', url: '#' }
+    ]
+  },
+  { 
+    id: 'r-3', 
+    name: 'محمد خالد', 
+    nameEn: 'Mohamed_Khaled',
+    email: 'mohamed@example.com', 
+    phone: '+201234567892',
+    school: 'الجامعة الأمريكية',
+    registrationDate: '2025-01-04', 
+    status: 'تم التسليم', 
+    filesCount: 5,
+    projectId: 'proj-2',
+    projectTitle: 'هاكاثون تطوير تطبيقات الموبايل',
+    projectTitleEn: 'Mobile_App_Hackathon',
+    uploadedFiles: [
+      { id: 'f-3', name: 'final_project.pdf', type: 'application/pdf', size: '5.8 MB', uploadDate: '2025-01-10', url: '#' },
+      { id: 'f-4', name: 'documentation.pdf', type: 'application/pdf', size: '3.2 MB', uploadDate: '2025-01-10', url: '#' },
+      { id: 'f-5', name: 'presentation.pdf', type: 'application/pdf', size: '4.1 MB', uploadDate: '2025-01-10', url: '#' },
+      { id: 'f-6', name: 'source_code.zip', type: 'application/zip', size: '12.5 MB', uploadDate: '2025-01-10', url: '#' },
+      { id: 'f-7', name: 'demo_video.mp4', type: 'video/mp4', size: '45.0 MB', uploadDate: '2025-01-10', url: '#' }
+    ]
+  },
+  { 
+    id: 'r-4', 
+    name: 'فاطمة حسن', 
+    nameEn: 'Fatma_Hassan',
+    email: 'fatma@example.com', 
+    phone: '+201234567893',
+    school: 'جامعة الإسكندرية',
+    registrationDate: '2025-01-05', 
+    status: 'مسجل', 
+    filesCount: 0,
+    projectId: 'proj-3',
+    projectTitle: 'مشروع تخرج الطلاب المتميزين',
+    projectTitleEn: 'Outstanding_Graduation_Project',
+    uploadedFiles: []
+  },
+  { 
+    id: 'r-5', 
+    name: 'عمر أحمد', 
+    nameEn: 'Omar_Ahmed',
+    email: 'omar@example.com', 
+    phone: '+201234567894',
+    school: 'جامعة المنصورة',
+    registrationDate: '2025-01-06', 
+    status: 'جاري العمل', 
+    filesCount: 3,
+    projectId: 'proj-1',
+    projectTitle: 'مسابقة الذكاء الاصطناعي 2025',
+    projectTitleEn: 'AI_Competition_2025',
+    uploadedFiles: [
+      { id: 'f-8', name: 'research_paper.pdf', type: 'application/pdf', size: '1.8 MB', uploadDate: '2025-01-08', url: '#' },
+      { id: 'f-9', name: 'model_results.pdf', type: 'application/pdf', size: '2.3 MB', uploadDate: '2025-01-09', url: '#' },
+      { id: 'f-10', name: 'dataset_description.pdf', type: 'application/pdf', size: '0.8 MB', uploadDate: '2025-01-09', url: '#' }
+    ]
+  },
+  { 
+    id: 'r-6', 
+    name: 'نورا سامي', 
+    nameEn: 'Noura_Sami',
+    email: 'noura@example.com', 
+    phone: '+201234567895',
+    school: 'جامعة حلوان',
+    registrationDate: '2025-01-07', 
+    status: 'تم التسليم', 
+    filesCount: 4,
+    projectId: 'proj-5',
+    projectTitle: 'مسابقة تصميم واجهات المستخدم',
+    projectTitleEn: 'UI_Design_Competition',
+    uploadedFiles: [
+      { id: 'f-11', name: 'ui_designs.pdf', type: 'application/pdf', size: '8.5 MB', uploadDate: '2025-01-12', url: '#' },
+      { id: 'f-12', name: 'wireframes.pdf', type: 'application/pdf', size: '3.2 MB', uploadDate: '2025-01-12', url: '#' },
+      { id: 'f-13', name: 'style_guide.pdf', type: 'application/pdf', size: '2.1 MB', uploadDate: '2025-01-12', url: '#' },
+      { id: 'f-14', name: 'prototype_link.pdf', type: 'application/pdf', size: '0.5 MB', uploadDate: '2025-01-12', url: '#' }
+    ]
+  },
+  { 
+    id: 'r-7', 
+    name: 'يوسف إبراهيم', 
+    nameEn: 'Youssef_Ibrahim',
+    email: 'youssef@example.com', 
+    phone: '+201234567896',
+    school: 'جامعة الأزهر',
+    registrationDate: '2025-01-08', 
+    status: 'مسجل', 
+    filesCount: 0,
+    projectId: 'proj-6',
+    projectTitle: 'برنامج التدريب الصيفي',
+    projectTitleEn: 'Summer_Training_Program',
+    uploadedFiles: []
+  },
+  { 
+    id: 'r-8', 
+    name: 'هدى علي', 
+    nameEn: 'Hoda_Ali',
+    email: 'hoda@example.com', 
+    phone: '+201234567897',
+    school: 'جامعة طنطا',
+    registrationDate: '2025-01-09', 
+    status: 'جاري العمل', 
+    filesCount: 1,
+    projectId: 'proj-2',
+    projectTitle: 'هاكاثون تطوير تطبيقات الموبايل',
+    projectTitleEn: 'Mobile_App_Hackathon',
+    uploadedFiles: [
+      { id: 'f-15', name: 'initial_design.pdf', type: 'application/pdf', size: '1.5 MB', uploadDate: '2025-01-11', url: '#' }
+    ]
+  },
+  { 
+    id: 'r-9', 
+    name: 'كريم محمود', 
+    nameEn: 'Karim_Mahmoud',
+    email: 'karim@example.com', 
+    phone: '+201234567898',
+    school: 'جامعة بنها',
+    registrationDate: '2025-01-10', 
+    status: 'مسجل', 
+    filesCount: 0,
+    projectId: 'proj-7',
+    projectTitle: 'مسابقة البرمجة التنافسية',
+    projectTitleEn: 'Competitive_Programming',
+    uploadedFiles: []
+  },
+  { 
+    id: 'r-10', 
+    name: 'مريم عادل', 
+    nameEn: 'Mariam_Adel',
+    email: 'mariam@example.com', 
+    phone: '+201234567899',
+    school: 'جامعة الزقازيق',
+    registrationDate: '2025-01-11', 
+    status: 'تم التسليم', 
+    filesCount: 6,
+    projectId: 'proj-3',
+    projectTitle: 'مشروع تخرج الطلاب المتميزين',
+    projectTitleEn: 'Outstanding_Graduation_Project',
+    uploadedFiles: [
+      { id: 'f-16', name: 'graduation_project.pdf', type: 'application/pdf', size: '15.2 MB', uploadDate: '2025-01-15', url: '#' },
+      { id: 'f-17', name: 'thesis_document.pdf', type: 'application/pdf', size: '8.7 MB', uploadDate: '2025-01-15', url: '#' },
+      { id: 'f-18', name: 'presentation_slides.pdf', type: 'application/pdf', size: '4.3 MB', uploadDate: '2025-01-15', url: '#' },
+      { id: 'f-19', name: 'appendix_a.pdf', type: 'application/pdf', size: '2.1 MB', uploadDate: '2025-01-15', url: '#' },
+      { id: 'f-20', name: 'appendix_b.pdf', type: 'application/pdf', size: '1.8 MB', uploadDate: '2025-01-15', url: '#' },
+      { id: 'f-21', name: 'references.pdf', type: 'application/pdf', size: '0.9 MB', uploadDate: '2025-01-15', url: '#' }
+    ]
+  },
 ];
 
 export const statisticsData: StatisticsData = {
