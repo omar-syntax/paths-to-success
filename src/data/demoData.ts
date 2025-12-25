@@ -1,4 +1,5 @@
-import { Project, Registration, Notification, StatisticsData, FormField } from '@/types';
+import { Project, Registration, Notification, StatisticsData, FormField, Grade, Comment, UploadedFile, Registrant } from '@/types';
+export type { UploadedFile, Registrant };
 
 export const demoProjects: Project[] = [
   {
@@ -173,30 +174,7 @@ export const notifications: Notification[] = [
   },
 ];
 
-export interface UploadedFile {
-  id: string;
-  name: string;
-  type: string;
-  size: string;
-  uploadDate: string;
-  url: string;
-}
-
-export interface Registrant {
-  id: string;
-  name: string;
-  nameEn: string;
-  email: string;
-  phone: string;
-  school: string;
-  registrationDate: string;
-  status: 'مسجل' | 'جاري العمل' | 'تم التسليم';
-  filesCount: number;
-  projectId: string;
-  projectTitle: string;
-  projectTitleEn: string;
-  uploadedFiles: UploadedFile[];
-}
+// Registrant and UploadedFile types are now imported from @/types
 
 export const registrants: Registrant[] = [
   { 
