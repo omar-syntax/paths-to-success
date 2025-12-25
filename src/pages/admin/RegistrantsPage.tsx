@@ -20,8 +20,10 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { AvatarPlaceholder } from '@/components/ui/avatar-placeholder';
-import { adminDemoProjects, registrants } from '@/data/demoData';
+import { StudentDetailsModal } from '@/components/admin/StudentDetailsModal';
+import { adminDemoProjects, registrants, Registrant } from '@/data/demoData';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const statusConfig: Record<string, { className: string }> = {
   'مسجل': { className: 'bg-info text-info-foreground' },
@@ -32,11 +34,17 @@ const statusConfig: Record<string, { className: string }> = {
 export default function RegistrantsPage() {
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedRegistrant, setSelectedRegistrant] = useState<Registrant | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
-  const filteredRegistrants = registrants.filter(r =>
-    r.name.includes(searchTerm) || r.email.includes(searchTerm)
-  );
+  // Filter registrants by project and search term
+  const filteredRegistrants = registrants.filter(r => {
+    const matchesSearch = r.name.includes(searchTerm) || r.email.includes(searchTerm);
+    const matchesProject = !selectedProject || r.projectId === selectedProject;
+    return matchesSearch && matchesProject;
+  });
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('ar-EG', {
@@ -46,11 +54,84 @@ export default function RegistrantsPage() {
     });
   };
 
-  const handleAction = (action: string) => {
-    toast({
-      title: 'قريباً',
-      description: `${action} قيد التطوير`,
-    });
+  const handleViewDetails = (registrant: Registrant) => {
+    setSelectedRegistrant(registrant);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRegistrant(null);
+  };
+
+  const handleDownloadFile = (registrant: Registrant, fileId?: string) => {
+    // Check if user is admin
+    if (user?.role !== 'admin') {
+      toast({
+        title: 'غير مصرح',
+        description: 'ليس لديك صلاحية للوصول لهذه الميزة',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (registrant.uploadedFiles.length === 0) {
+      toast({
+        title: 'لا توجد ملفات',
+        description: 'هذا الطالب لم يقم برفع أي ملفات بعد',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Generate filename in English format: studentName_projectName.pdf
+    const fileName = `${registrant.nameEn}_${registrant.projectTitleEn}.pdf`;
+
+    if (fileId) {
+      // Download specific file
+      const file = registrant.uploadedFiles.find(f => f.id === fileId);
+      if (file) {
+        simulateDownload(fileName, file.name);
+        toast({
+          title: 'جاري التحميل',
+          description: `جاري تحميل الملف: ${file.name}`,
+        });
+      }
+    } else {
+      // Download all files as a single PDF
+      simulateDownload(fileName, 'all files');
+      toast({
+        title: 'جاري التحميل',
+        description: `جاري تحميل جميع ملفات ${registrant.name}`,
+      });
+    }
+  };
+
+  const simulateDownload = (fileName: string, originalName: string) => {
+    // In a real app, this would fetch the file from storage and download it
+    // For demo purposes, we'll create a simple text file
+    const content = `
+      Demo PDF Content
+      ================
+      
+      This is a simulated PDF download.
+      In a real application, this would be the actual student file.
+      
+      Original file: ${originalName}
+      Downloaded as: ${fileName}
+      
+      Timestamp: ${new Date().toISOString()}
+    `;
+
+    const blob = new Blob([content], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -67,6 +148,7 @@ export default function RegistrantsPage() {
             <SelectValue placeholder="اختر مشروع" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">جميع المشاريع</SelectItem>
             {adminDemoProjects.map((project) => (
               <SelectItem key={project.id} value={project.id}>
                 {project.title}
@@ -100,6 +182,7 @@ export default function RegistrantsPage() {
                 <TableRow>
                   <TableHead className="text-right">المستخدم</TableHead>
                   <TableHead className="text-right">البريد الإلكتروني</TableHead>
+                  <TableHead className="text-right">المشروع</TableHead>
                   <TableHead className="text-right">تاريخ التسجيل</TableHead>
                   <TableHead className="text-right">الحالة</TableHead>
                   <TableHead className="text-right">الملفات</TableHead>
@@ -119,6 +202,11 @@ export default function RegistrantsPage() {
                       <span className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Mail className="w-3.5 h-3.5" />
                         <span dir="ltr">{registrant.email}</span>
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm font-medium text-foreground">
+                        {registrant.projectTitle}
                       </span>
                     </TableCell>
                     <TableCell>
@@ -144,7 +232,7 @@ export default function RegistrantsPage() {
                           variant="ghost"
                           size="icon"
                           title="عرض التفاصيل"
-                          onClick={() => handleAction('عرض التفاصيل')}
+                          onClick={() => handleViewDetails(registrant)}
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
@@ -152,7 +240,7 @@ export default function RegistrantsPage() {
                           variant="ghost"
                           size="icon"
                           title="تحميل الملفات"
-                          onClick={() => handleAction('تحميل الملفات')}
+                          onClick={() => handleDownloadFile(registrant)}
                           disabled={registrant.filesCount === 0}
                         >
                           <Download className="w-4 h-4" />
@@ -166,6 +254,14 @@ export default function RegistrantsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Student Details Modal */}
+      <StudentDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        registrant={selectedRegistrant}
+        onDownloadFile={handleDownloadFile}
+      />
     </div>
   );
 }
