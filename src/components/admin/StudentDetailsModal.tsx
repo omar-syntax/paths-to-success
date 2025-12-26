@@ -298,7 +298,12 @@ export function StudentDetailsModal({
           }}
           file={selectedFile}
           studentName={registrant.nameEn}
+          studentEmail={registrant.email}
           projectName={registrant.projectTitleEn}
+          submissionId={registrant.id}
+          submissionDate={registrant.registrationDate}
+          status={registrant.status}
+          grade={localGrade}
         />
       )}
     </>
