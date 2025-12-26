@@ -69,8 +69,6 @@ export function StudentDetailsModal({
     setLocalComments(registrant?.comments || []);
   }, [registrant]);
 
-  if (!registrant) return null;
-
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('ar-EG', {
       year: 'numeric',
@@ -94,8 +92,13 @@ export function StudentDetailsModal({
 
   const handleSaveGrade = useCallback((grade: Grade) => {
     setLocalGrade(grade);
-    onUpdateGrade?.(registrant.id, grade);
-  }, [registrant?.id, onUpdateGrade]);
+    if (registrant) {
+      onUpdateGrade?.(registrant.id, grade);
+    }
+  }, [registrant, onUpdateGrade]);
+
+  // Early return AFTER all hooks
+  if (!registrant) return null;
 
   const handleAddComment = (content: string) => {
     const newComment: Comment = {
