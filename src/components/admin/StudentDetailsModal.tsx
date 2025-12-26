@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Mail, Phone, School, Calendar, FileText, Download, Eye, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import {
   Dialog,
@@ -28,6 +28,7 @@ interface StudentDetailsModalProps {
   currentUserName?: string;
   onUpdateGrade?: (registrantId: string, grade: Grade) => void;
   onAddComment?: (registrantId: string, comment: Comment) => void;
+  isSavingGrade?: boolean;
 }
 
 const statusConfig: Record<string, { className: string; icon: React.ReactNode }> = {
@@ -54,6 +55,7 @@ export function StudentDetailsModal({
   currentUserName = 'الأدمن',
   onUpdateGrade,
   onAddComment,
+  isSavingGrade = false,
 }: StudentDetailsModalProps) {
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<UploadedFile | null>(null);
@@ -90,10 +92,10 @@ export function StudentDetailsModal({
     setIsDownloadModalOpen(true);
   };
 
-  const handleSaveGrade = (grade: Grade) => {
+  const handleSaveGrade = useCallback((grade: Grade) => {
     setLocalGrade(grade);
     onUpdateGrade?.(registrant.id, grade);
-  };
+  }, [registrant?.id, onUpdateGrade]);
 
   const handleAddComment = (content: string) => {
     const newComment: Comment = {
@@ -265,6 +267,7 @@ export function StudentDetailsModal({
                     grade={localGrade}
                     onSaveGrade={handleSaveGrade}
                     isAdmin={isAdmin}
+                    isSaving={isSavingGrade}
                   />
                 </TabsContent>
 

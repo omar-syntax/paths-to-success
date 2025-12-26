@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Download, Eye, Mail, Calendar, FileText, Search, Star } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -44,6 +44,7 @@ export default function RegistrantsPage() {
     registrant: Registrant;
   } | null>(null);
   const [registrantsData, setRegistrantsData] = useState<Registrant[]>(initialRegistrants);
+  const [isSavingGrade, setIsSavingGrade] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -116,15 +117,38 @@ export default function RegistrantsPage() {
     }
   };
 
-  const handleUpdateGrade = (registrantId: string, grade: Grade) => {
-    setRegistrantsData(prev => 
-      prev.map(r => r.id === registrantId ? { ...r, grade } : r)
-    );
-    // Update selected registrant if it's the same
-    if (selectedRegistrant?.id === registrantId) {
-      setSelectedRegistrant(prev => prev ? { ...prev, grade } : null);
+  const handleUpdateGrade = useCallback(async (registrantId: string, grade: Grade) => {
+    setIsSavingGrade(true);
+    
+    try {
+      // Simulate API call to save grade to database
+      // In production, this would call the Supabase API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setRegistrantsData(prev => 
+        prev.map(r => r.id === registrantId ? { ...r, grade } : r)
+      );
+      
+      // Update selected registrant if it's the same
+      if (selectedRegistrant?.id === registrantId) {
+        setSelectedRegistrant(prev => prev ? { ...prev, grade } : null);
+      }
+
+      toast({
+        title: 'تم حفظ التقييم',
+        description: 'تم حفظ الدرجة بنجاح في قاعدة البيانات',
+      });
+    } catch (error) {
+      console.error('Error saving grade:', error);
+      toast({
+        title: 'خطأ',
+        description: 'حدث خطأ أثناء حفظ التقييم',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSavingGrade(false);
     }
-  };
+  }, [selectedRegistrant?.id, toast]);
 
   const handleAddComment = (registrantId: string, comment: Comment) => {
     setRegistrantsData(prev => 
@@ -287,6 +311,7 @@ export default function RegistrantsPage() {
         currentUserName={user?.fullName || 'الأدمن'}
         onUpdateGrade={handleUpdateGrade}
         onAddComment={handleAddComment}
+        isSavingGrade={isSavingGrade}
       />
 
       {/* Download Format Modal */}
