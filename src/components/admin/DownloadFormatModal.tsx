@@ -4,20 +4,36 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Download, FileText, File, Loader2, AlertCircle } from 'lucide-react';
-import { UploadedFile } from '@/types';
-import { useFileDownload } from '@/hooks/useFileDownload';
+import { UploadedFile, Grade } from '@/types';
+import { useFileDownload, SubmissionData } from '@/hooks/useFileDownload';
 
 interface DownloadFormatModalProps {
   isOpen: boolean;
   onClose: () => void;
   file: UploadedFile;
   studentName: string;
+  studentEmail?: string;
   projectName: string;
+  submissionId?: string;
+  submissionDate?: string;
+  status?: string;
+  grade?: Grade;
 }
 
 type DownloadFormat = 'pdf' | 'docx' | 'original';
 
-const DownloadFormatModal = ({ isOpen, onClose, file, studentName, projectName }: DownloadFormatModalProps) => {
+const DownloadFormatModal = ({ 
+  isOpen, 
+  onClose, 
+  file, 
+  studentName, 
+  studentEmail = '',
+  projectName,
+  submissionId = '',
+  submissionDate = '',
+  status = '',
+  grade,
+}: DownloadFormatModalProps) => {
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>('original');
   const { isDownloading, error, downloadDemoFile } = useFileDownload();
 
@@ -27,17 +43,27 @@ const DownloadFormatModal = ({ isOpen, onClose, file, studentName, projectName }
 
   const originalExtension = getFileExtension(file.name);
 
+  // PDF is always supported since we generate it with submission data
   const isConversionSupported = (format: DownloadFormat) => {
-    const supportedForPdf = ['pdf', 'doc', 'docx', 'txt', 'rtf'];
-    const supportedForDocx = ['doc', 'docx', 'txt', 'rtf'];
-    
     if (format === 'original') return true;
-    if (format === 'pdf') return supportedForPdf.includes(originalExtension);
-    if (format === 'docx') return supportedForDocx.includes(originalExtension);
+    if (format === 'pdf') return true; // Always supported - we generate full PDF
+    if (format === 'docx') return true; // Always supported - we generate text content
     return false;
   };
 
   const handleDownload = async () => {
+    // Build submission data for PDF/DOCX generation
+    const submissionData: SubmissionData = {
+      studentName: studentName.replace(/_/g, ' '),
+      studentEmail,
+      projectTitle: projectName.replace(/_/g, ' '),
+      submissionId,
+      submissionDate,
+      fileName: file.name,
+      status,
+      grade,
+    };
+
     const success = await downloadDemoFile({
       fileName: file.name,
       fileType: file.type || 'application/octet-stream',
@@ -45,6 +71,7 @@ const DownloadFormatModal = ({ isOpen, onClose, file, studentName, projectName }
       studentNameEn: studentName,
       projectNameEn: projectName,
       fileUrl: file.url,
+      submissionData,
     });
 
     if (success) {

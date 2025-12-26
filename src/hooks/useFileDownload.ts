@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Grade } from '@/types';
+import { generateSubmissionPdf } from '@/utils/pdfGenerator';
 
 type DownloadFormat = 'pdf' | 'docx' | 'original';
 
@@ -11,6 +13,17 @@ interface DownloadOptions {
   format: DownloadFormat;
   studentNameEn: string;
   projectNameEn: string;
+}
+
+export interface SubmissionData {
+  studentName: string;
+  studentEmail: string;
+  projectTitle: string;
+  submissionId: string;
+  submissionDate: string;
+  fileName: string;
+  status: string;
+  grade?: Grade;
 }
 
 // MIME type mapping
@@ -146,7 +159,7 @@ export function useFileDownload() {
     }
   };
 
-  // Download file from demo data (fallback for when no real storage is used)
+  // Download file from demo data with full submission details for PDF
   const downloadDemoFile = async (options: {
     fileName: string;
     fileType: string;
@@ -154,8 +167,9 @@ export function useFileDownload() {
     studentNameEn: string;
     projectNameEn: string;
     fileUrl?: string;
+    submissionData?: SubmissionData;
   }): Promise<boolean> => {
-    const { fileName, fileType, format, studentNameEn, projectNameEn, fileUrl } = options;
+    const { fileName, fileType, format, studentNameEn, projectNameEn, submissionData } = options;
     
     setIsDownloading(true);
     setError(null);
@@ -163,89 +177,80 @@ export function useFileDownload() {
     try {
       const originalExt = fileName.split('.').pop()?.toLowerCase() || '';
       
-      // Determine final extension and MIME type
-      let finalExtension = originalExt;
-      let mimeType = fileType || MIME_TYPES[originalExt] || 'application/octet-stream';
-      let conversionFailed = false;
+      // Create clean filename in English format
+      const cleanStudentName = studentNameEn.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+      const cleanProjectName = projectNameEn.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
 
-      if (format === 'pdf') {
-        if (originalExt === 'pdf') {
-          finalExtension = 'pdf';
-          mimeType = MIME_TYPES['pdf'];
-        } else if (isConversionSupported(originalExt, 'pdf')) {
-          // Simulate conversion - in real app, call conversion service
-          conversionFailed = true;
-        } else {
-          conversionFailed = true;
-        }
-      } else if (format === 'docx') {
-        if (originalExt === 'docx') {
-          finalExtension = 'docx';
-          mimeType = MIME_TYPES['docx'];
-        } else if (isConversionSupported(originalExt, 'docx')) {
-          conversionFailed = true;
-        } else {
-          conversionFailed = true;
-        }
+      // Handle PDF format with full content
+      if (format === 'pdf' && submissionData) {
+        const pdfContent = generateSubmissionPdf(submissionData);
+        const finalFileName = `${cleanStudentName}_${cleanProjectName}.pdf`;
+        
+        const blob = new Blob([pdfContent], { type: 'application/pdf' });
+
+        // Create download link
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = finalFileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        toast({
+          title: 'تم التحميل بنجاح',
+          description: `تم تحميل الملف: ${finalFileName}`,
+        });
+
+        return true;
       }
 
-      if (conversionFailed) {
-        toast({
-          title: 'فشل التحويل',
-          description: 'تم تحميل الملف الأصلي بدلاً من ذلك',
-        });
-        // Reset to original format
+      // Handle other formats
+      let finalExtension = originalExt;
+      let mimeType = fileType || MIME_TYPES[originalExt] || 'application/octet-stream';
+
+      if (format === 'docx') {
+        finalExtension = 'docx';
+        mimeType = MIME_TYPES['docx'];
+      } else if (format === 'original') {
         finalExtension = originalExt;
         mimeType = fileType || MIME_TYPES[originalExt] || 'application/octet-stream';
       }
 
-      // Create clean filename in English format
-      const cleanStudentName = studentNameEn.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-      const cleanProjectName = projectNameEn.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
       const finalFileName = `${cleanStudentName}_${cleanProjectName}.${finalExtension}`;
 
-      // Create sample content based on MIME type
-      let content: BlobPart;
+      // Create content based on format
+      let content: string;
       
-      if (mimeType === 'application/pdf') {
-        // Create minimal valid PDF
-        content = `%PDF-1.4
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>
-endobj
-4 0 obj
-<< /Length 44 >>
-stream
-BT
-/F1 12 Tf
-100 700 Td
-(Demo File) Tj
-ET
-endstream
-endobj
-xref
-0 5
-0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000214 00000 n 
-trailer
-<< /Size 5 /Root 1 0 R >>
-startxref
-307
-%%EOF`;
-      } else if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        // For demo, create a simple text file (real DOCX needs proper structure)
-        content = `Demo Word Document\n\nStudent: ${studentNameEn}\nProject: ${projectNameEn}\n\nThis is a demo file for testing purposes.`;
+      if (format === 'docx' && submissionData) {
+        // Create readable text document
+        content = `STUDENT SUBMISSION REPORT
+========================
+
+STUDENT INFORMATION
+-------------------
+Full Name: ${submissionData.studentName}
+Email: ${submissionData.studentEmail}
+
+PROJECT INFORMATION
+-------------------
+Project Title: ${submissionData.projectTitle}
+
+SUBMISSION DETAILS
+------------------
+Submission ID: ${submissionData.submissionId}
+Submission Date: ${submissionData.submissionDate}
+File Name: ${submissionData.fileName}
+Status: ${submissionData.status}
+
+GRADE & FEEDBACK
+----------------
+Grade: ${submissionData.grade ? `${submissionData.grade.score} / ${submissionData.grade.maxScore}` : 'Not graded yet'}
+Feedback: ${submissionData.grade?.feedback || 'No feedback available'}
+`;
       } else {
-        content = `Demo file content\n\nStudent: ${studentNameEn}\nProject: ${projectNameEn}\n\nOriginal file: ${fileName}`;
+        content = `File: ${fileName}\nStudent: ${studentNameEn}\nProject: ${projectNameEn}`;
       }
 
       const blob = new Blob([content], { type: mimeType });
