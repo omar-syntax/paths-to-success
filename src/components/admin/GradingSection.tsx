@@ -1,24 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Star, Save, Edit2 } from 'lucide-react';
+import { Star, Save, Edit2, Loader2 } from 'lucide-react';
 import { Grade } from '@/types';
-import { toast } from '@/hooks/use-toast';
 
 interface GradingSectionProps {
   grade?: Grade;
   onSaveGrade: (grade: Grade) => void;
   isAdmin: boolean;
+  isSaving?: boolean;
 }
 
-const GradingSection = ({ grade, onSaveGrade, isAdmin }: GradingSectionProps) => {
+const GradingSection = ({ grade, onSaveGrade, isAdmin, isSaving = false }: GradingSectionProps) => {
   const [isEditing, setIsEditing] = useState(!grade);
   const [score, setScore] = useState(grade?.score || 0);
   const [maxScore, setMaxScore] = useState(grade?.maxScore || 100);
   const [stars, setStars] = useState(grade?.stars || 0);
   const [feedback, setFeedback] = useState(grade?.feedback || '');
+
+  // Update local state when grade prop changes
+  useEffect(() => {
+    if (grade) {
+      setScore(grade.score);
+      setMaxScore(grade.maxScore);
+      setStars(grade.stars || 0);
+      setFeedback(grade.feedback || '');
+      setIsEditing(false);
+    }
+  }, [grade]);
 
   const handleSave = () => {
     const newGrade: Grade = {
@@ -31,10 +42,6 @@ const GradingSection = ({ grade, onSaveGrade, isAdmin }: GradingSectionProps) =>
     };
     onSaveGrade(newGrade);
     setIsEditing(false);
-    toast({
-      title: 'تم حفظ التقييم',
-      description: 'تم حفظ الدرجة والتعليقات بنجاح',
-    });
   };
 
   const StarRating = ({ value, onChange, readonly }: { value: number; onChange?: (v: number) => void; readonly?: boolean }) => (
@@ -143,9 +150,13 @@ const GradingSection = ({ grade, onSaveGrade, isAdmin }: GradingSectionProps) =>
             />
           </div>
 
-          <Button onClick={handleSave} className="w-full">
-            <Save className="h-4 w-4 ml-2" />
-            حفظ التقييم
+          <Button onClick={handleSave} className="w-full" disabled={isSaving}>
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 ml-2 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4 ml-2" />
+            )}
+            {isSaving ? 'جاري الحفظ...' : 'حفظ التقييم'}
           </Button>
         </div>
       ) : (

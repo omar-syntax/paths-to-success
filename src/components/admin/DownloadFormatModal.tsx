@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Download, FileText, File, Loader2, AlertCircle } from 'lucide-react';
 import { UploadedFile } from '@/types';
-import { toast } from '@/hooks/use-toast';
+import { useFileDownload } from '@/hooks/useFileDownload';
 
 interface DownloadFormatModalProps {
   isOpen: boolean;
@@ -19,8 +19,7 @@ type DownloadFormat = 'pdf' | 'docx' | 'original';
 
 const DownloadFormatModal = ({ isOpen, onClose, file, studentName, projectName }: DownloadFormatModalProps) => {
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>('original');
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { isDownloading, error, downloadDemoFile } = useFileDownload();
 
   const getFileExtension = (fileName: string) => {
     return fileName.split('.').pop()?.toLowerCase() || '';
@@ -30,7 +29,7 @@ const DownloadFormatModal = ({ isOpen, onClose, file, studentName, projectName }
 
   const isConversionSupported = (format: DownloadFormat) => {
     const supportedForPdf = ['pdf', 'doc', 'docx', 'txt', 'rtf'];
-    const supportedForDocx = ['doc', 'docx', 'txt', 'rtf', 'pdf'];
+    const supportedForDocx = ['doc', 'docx', 'txt', 'rtf'];
     
     if (format === 'original') return true;
     if (format === 'pdf') return supportedForPdf.includes(originalExtension);
@@ -39,67 +38,17 @@ const DownloadFormatModal = ({ isOpen, onClose, file, studentName, projectName }
   };
 
   const handleDownload = async () => {
-    setIsDownloading(true);
-    setError(null);
+    const success = await downloadDemoFile({
+      fileName: file.name,
+      fileType: file.type || 'application/octet-stream',
+      format: selectedFormat,
+      studentNameEn: studentName,
+      projectNameEn: projectName,
+      fileUrl: file.url,
+    });
 
-    try {
-      // Simulate file processing delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Create filename in English format
-      const cleanStudentName = studentName.replace(/\s+/g, '_');
-      const cleanProjectName = projectName.replace(/\s+/g, '_');
-      
-      let extension = originalExtension;
-      if (selectedFormat === 'pdf') extension = 'pdf';
-      if (selectedFormat === 'docx') extension = 'docx';
-
-      const fileName = `${cleanStudentName}_${cleanProjectName}.${extension}`;
-
-      // Validate conversion is supported
-      if (!isConversionSupported(selectedFormat)) {
-        throw new Error(`تحويل الملف من ${originalExtension} إلى ${selectedFormat} غير مدعوم`);
-      }
-
-      // In a real implementation, this would call an API to convert and download the file
-      // For demo purposes, we'll create a sample blob
-      let content: Blob;
-      let mimeType: string;
-
-      if (selectedFormat === 'pdf') {
-        // Simulated PDF content
-        mimeType = 'application/pdf';
-        content = new Blob(['%PDF-1.4\nSimulated PDF content for demo'], { type: mimeType });
-      } else if (selectedFormat === 'docx') {
-        // Simulated DOCX content
-        mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-        content = new Blob(['Simulated DOCX content for demo'], { type: mimeType });
-      } else {
-        // Original format
-        mimeType = file.type || 'application/octet-stream';
-        content = new Blob([`Original file content: ${file.name}`], { type: mimeType });
-      }
-
-      // Create download link
-      const url = URL.createObjectURL(content);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      toast({
-        title: 'تم التحميل بنجاح',
-        description: `تم تحميل الملف: ${fileName}`,
-      });
-
+    if (success) {
       onClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'حدث خطأ أثناء تحميل الملف');
-    } finally {
-      setIsDownloading(false);
     }
   };
 
