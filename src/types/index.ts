@@ -76,6 +76,17 @@ export interface UploadedFile {
   url: string;
 }
 
+// English submission statuses
+export type SubmissionStatus = 'pending_review' | 'under_review' | 'graded' | 'needs_resubmission';
+
+export interface ActivityLogEntry {
+  id: string;
+  action: 'file_uploaded' | 'status_changed' | 'rating_added' | 'rating_edited' | 'comment_added' | 'comment_edited';
+  description: string;
+  performedBy: string;
+  performedAt: string;
+}
+
 export interface Registrant {
   id: string;
   name: string;
@@ -85,6 +96,7 @@ export interface Registrant {
   school: string;
   registrationDate: string;
   status: 'مسجل' | 'جاري العمل' | 'تم التسليم';
+  submissionStatus: SubmissionStatus;
   filesCount: number;
   projectId: string;
   projectTitle: string;
@@ -92,4 +104,7 @@ export interface Registrant {
   uploadedFiles: UploadedFile[];
   grade?: Grade;
   comments?: Comment[];
+  adminNotes?: string;
+  lastActivity?: string;
+  activityLog?: ActivityLogEntry[];
 }
