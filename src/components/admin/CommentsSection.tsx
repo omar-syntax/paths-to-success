@@ -9,7 +9,7 @@ import { toast } from '@/hooks/use-toast';
 
 interface CommentsSectionProps {
   comments: Comment[];
-  onAddComment: (content: string) => void;
+  onAddComment?: (content: string) => void;
   currentUserRole: 'admin' | 'student';
   currentUserName: string;
 }
@@ -17,7 +17,12 @@ interface CommentsSectionProps {
 const CommentsSection = ({ comments, onAddComment, currentUserRole, currentUserName }: CommentsSectionProps) => {
   const [newComment, setNewComment] = useState('');
 
+  // Only admins can add comments
+  const canAddComment = currentUserRole === 'admin';
+
   const handleSubmit = () => {
+    if (!canAddComment || !onAddComment) return;
+    
     if (!newComment.trim()) {
       toast({
         title: 'تنبيه',
@@ -56,7 +61,7 @@ const CommentsSection = ({ comments, onAddComment, currentUserRole, currentUserN
         <h4 className="font-semibold">التعليقات ({comments.length})</h4>
       </div>
 
-      {/* Comments List */}
+      {/* Comments List - READ ONLY for students */}
       <div className="max-h-64 overflow-y-auto space-y-3 p-2">
         {comments.length === 0 ? (
           <p className="text-center text-muted-foreground py-4">لا توجد تعليقات حتى الآن</p>
@@ -88,26 +93,37 @@ const CommentsSection = ({ comments, onAddComment, currentUserRole, currentUserN
         )}
       </div>
 
-      {/* Add Comment */}
-      <div className="flex gap-2 pt-2 border-t">
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className={currentUserRole === 'admin' ? 'bg-primary text-primary-foreground' : ''}>
-            {getInitials(currentUserName)}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1 flex gap-2">
-          <Textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="اكتب تعليقك هنا..."
-            rows={2}
-            className="resize-none"
-          />
-          <Button onClick={handleSubmit} size="icon" className="shrink-0">
-            <Send className="h-4 w-4" />
-          </Button>
+      {/* Add Comment - ONLY visible for admins */}
+      {canAddComment && (
+        <div className="flex gap-2 pt-2 border-t">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              {getInitials(currentUserName)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 flex gap-2">
+            <Textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="اكتب تعليقك هنا..."
+              rows={2}
+              className="resize-none"
+            />
+            <Button onClick={handleSubmit} size="icon" className="shrink-0">
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Read-only notice for students */}
+      {!canAddComment && (
+        <div className="pt-2 border-t">
+          <p className="text-sm text-muted-foreground text-center py-2">
+            التعليقات للقراءة فقط
+          </p>
+        </div>
+      )}
     </div>
   );
 };
