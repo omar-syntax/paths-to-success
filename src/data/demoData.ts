@@ -185,12 +185,18 @@ export const registrants: Registrant[] = [
     phone: '+201234567890',
     school: 'جامعة القاهرة',
     registrationDate: '2025-01-02', 
-    status: 'مسجل', 
+    status: 'مسجل',
+    submissionStatus: 'pending_review',
     filesCount: 0,
     projectId: 'proj-1',
     projectTitle: 'مسابقة الذكاء الاصطناعي 2025',
     projectTitleEn: 'AI_Competition_2025',
-    uploadedFiles: []
+    uploadedFiles: [],
+    lastActivity: '2025-01-02',
+    adminNotes: '',
+    activityLog: [
+      { id: 'log-1', action: 'status_changed', description: 'Student registered for the project', performedBy: 'System', performedAt: '2025-01-02T10:00:00Z' }
+    ]
   },
   { 
     id: 'r-2', 
@@ -200,7 +206,8 @@ export const registrants: Registrant[] = [
     phone: '+201234567891',
     school: 'جامعة عين شمس',
     registrationDate: '2025-01-03', 
-    status: 'جاري العمل', 
+    status: 'جاري العمل',
+    submissionStatus: 'under_review',
     filesCount: 2,
     projectId: 'proj-1',
     projectTitle: 'مسابقة الذكاء الاصطناعي 2025',
@@ -208,6 +215,14 @@ export const registrants: Registrant[] = [
     uploadedFiles: [
       { id: 'f-1', name: 'project_proposal.pdf', type: 'application/pdf', size: '2.5 MB', uploadDate: '2025-01-05', url: '#' },
       { id: 'f-2', name: 'team_info.pdf', type: 'application/pdf', size: '1.2 MB', uploadDate: '2025-01-06', url: '#' }
+    ],
+    lastActivity: '2025-01-06',
+    adminNotes: 'Strong candidate, good proposal structure.',
+    activityLog: [
+      { id: 'log-2', action: 'status_changed', description: 'Student registered for the project', performedBy: 'System', performedAt: '2025-01-03T09:00:00Z' },
+      { id: 'log-3', action: 'file_uploaded', description: 'Uploaded project_proposal.pdf', performedBy: 'Sara Abdullah', performedAt: '2025-01-05T14:30:00Z' },
+      { id: 'log-4', action: 'file_uploaded', description: 'Uploaded team_info.pdf', performedBy: 'Sara Abdullah', performedAt: '2025-01-06T11:00:00Z' },
+      { id: 'log-5', action: 'status_changed', description: 'Status changed to Under Review', performedBy: 'Admin', performedAt: '2025-01-06T15:00:00Z' }
     ]
   },
   { 
@@ -218,7 +233,8 @@ export const registrants: Registrant[] = [
     phone: '+201234567892',
     school: 'الجامعة الأمريكية',
     registrationDate: '2025-01-04', 
-    status: 'تم التسليم', 
+    status: 'تم التسليم',
+    submissionStatus: 'graded',
     filesCount: 5,
     projectId: 'proj-2',
     projectTitle: 'هاكاثون تطوير تطبيقات الموبايل',
@@ -229,6 +245,15 @@ export const registrants: Registrant[] = [
       { id: 'f-5', name: 'presentation.pdf', type: 'application/pdf', size: '4.1 MB', uploadDate: '2025-01-10', url: '#' },
       { id: 'f-6', name: 'source_code.zip', type: 'application/zip', size: '12.5 MB', uploadDate: '2025-01-10', url: '#' },
       { id: 'f-7', name: 'demo_video.mp4', type: 'video/mp4', size: '45.0 MB', uploadDate: '2025-01-10', url: '#' }
+    ],
+    grade: { score: 92, maxScore: 100, stars: 5, feedback: 'Excellent work! Great implementation.', gradedBy: 'Admin', gradedAt: '2025-01-12T10:00:00Z' },
+    lastActivity: '2025-01-12',
+    adminNotes: 'Outstanding submission. Consider for showcase.',
+    activityLog: [
+      { id: 'log-6', action: 'status_changed', description: 'Student registered', performedBy: 'System', performedAt: '2025-01-04T08:00:00Z' },
+      { id: 'log-7', action: 'file_uploaded', description: 'Uploaded 5 files', performedBy: 'Mohamed Khaled', performedAt: '2025-01-10T16:00:00Z' },
+      { id: 'log-8', action: 'status_changed', description: 'Status changed to Graded', performedBy: 'Admin', performedAt: '2025-01-12T10:00:00Z' },
+      { id: 'log-9', action: 'rating_added', description: 'Grade: 92/100 (5 stars)', performedBy: 'Admin', performedAt: '2025-01-12T10:00:00Z' }
     ]
   },
   { 
@@ -239,12 +264,16 @@ export const registrants: Registrant[] = [
     phone: '+201234567893',
     school: 'جامعة الإسكندرية',
     registrationDate: '2025-01-05', 
-    status: 'مسجل', 
+    status: 'مسجل',
+    submissionStatus: 'pending_review',
     filesCount: 0,
     projectId: 'proj-3',
     projectTitle: 'مشروع تخرج الطلاب المتميزين',
     projectTitleEn: 'Outstanding_Graduation_Project',
-    uploadedFiles: []
+    uploadedFiles: [],
+    lastActivity: '2025-01-05',
+    adminNotes: '',
+    activityLog: []
   },
   { 
     id: 'r-5', 
@@ -254,7 +283,8 @@ export const registrants: Registrant[] = [
     phone: '+201234567894',
     school: 'جامعة المنصورة',
     registrationDate: '2025-01-06', 
-    status: 'جاري العمل', 
+    status: 'جاري العمل',
+    submissionStatus: 'needs_resubmission',
     filesCount: 3,
     projectId: 'proj-1',
     projectTitle: 'مسابقة الذكاء الاصطناعي 2025',
@@ -263,6 +293,12 @@ export const registrants: Registrant[] = [
       { id: 'f-8', name: 'research_paper.pdf', type: 'application/pdf', size: '1.8 MB', uploadDate: '2025-01-08', url: '#' },
       { id: 'f-9', name: 'model_results.pdf', type: 'application/pdf', size: '2.3 MB', uploadDate: '2025-01-09', url: '#' },
       { id: 'f-10', name: 'dataset_description.pdf', type: 'application/pdf', size: '0.8 MB', uploadDate: '2025-01-09', url: '#' }
+    ],
+    lastActivity: '2025-01-09',
+    adminNotes: 'Needs to improve documentation. Missing key sections.',
+    activityLog: [
+      { id: 'log-10', action: 'status_changed', description: 'Marked as Needs Resubmission', performedBy: 'Admin', performedAt: '2025-01-09T14:00:00Z' },
+      { id: 'log-11', action: 'comment_added', description: 'Feedback provided for resubmission', performedBy: 'Admin', performedAt: '2025-01-09T14:05:00Z' }
     ]
   },
   { 
@@ -273,7 +309,8 @@ export const registrants: Registrant[] = [
     phone: '+201234567895',
     school: 'جامعة حلوان',
     registrationDate: '2025-01-07', 
-    status: 'تم التسليم', 
+    status: 'تم التسليم',
+    submissionStatus: 'graded',
     filesCount: 4,
     projectId: 'proj-5',
     projectTitle: 'مسابقة تصميم واجهات المستخدم',
@@ -283,7 +320,11 @@ export const registrants: Registrant[] = [
       { id: 'f-12', name: 'wireframes.pdf', type: 'application/pdf', size: '3.2 MB', uploadDate: '2025-01-12', url: '#' },
       { id: 'f-13', name: 'style_guide.pdf', type: 'application/pdf', size: '2.1 MB', uploadDate: '2025-01-12', url: '#' },
       { id: 'f-14', name: 'prototype_link.pdf', type: 'application/pdf', size: '0.5 MB', uploadDate: '2025-01-12', url: '#' }
-    ]
+    ],
+    grade: { score: 88, maxScore: 100, stars: 4, feedback: 'Very creative designs!', gradedBy: 'Admin', gradedAt: '2025-01-14T10:00:00Z' },
+    lastActivity: '2025-01-14',
+    adminNotes: '',
+    activityLog: []
   },
   { 
     id: 'r-7', 
@@ -293,12 +334,16 @@ export const registrants: Registrant[] = [
     phone: '+201234567896',
     school: 'جامعة الأزهر',
     registrationDate: '2025-01-08', 
-    status: 'مسجل', 
+    status: 'مسجل',
+    submissionStatus: 'pending_review',
     filesCount: 0,
     projectId: 'proj-6',
     projectTitle: 'برنامج التدريب الصيفي',
     projectTitleEn: 'Summer_Training_Program',
-    uploadedFiles: []
+    uploadedFiles: [],
+    lastActivity: '2025-01-08',
+    adminNotes: '',
+    activityLog: []
   },
   { 
     id: 'r-8', 
@@ -308,14 +353,18 @@ export const registrants: Registrant[] = [
     phone: '+201234567897',
     school: 'جامعة طنطا',
     registrationDate: '2025-01-09', 
-    status: 'جاري العمل', 
+    status: 'جاري العمل',
+    submissionStatus: 'under_review',
     filesCount: 1,
     projectId: 'proj-2',
     projectTitle: 'هاكاثون تطوير تطبيقات الموبايل',
     projectTitleEn: 'Mobile_App_Hackathon',
     uploadedFiles: [
       { id: 'f-15', name: 'initial_design.pdf', type: 'application/pdf', size: '1.5 MB', uploadDate: '2025-01-11', url: '#' }
-    ]
+    ],
+    lastActivity: '2025-01-11',
+    adminNotes: '',
+    activityLog: []
   },
   { 
     id: 'r-9', 
@@ -325,12 +374,16 @@ export const registrants: Registrant[] = [
     phone: '+201234567898',
     school: 'جامعة بنها',
     registrationDate: '2025-01-10', 
-    status: 'مسجل', 
+    status: 'مسجل',
+    submissionStatus: 'pending_review',
     filesCount: 0,
     projectId: 'proj-7',
     projectTitle: 'مسابقة البرمجة التنافسية',
     projectTitleEn: 'Competitive_Programming',
-    uploadedFiles: []
+    uploadedFiles: [],
+    lastActivity: '2025-01-10',
+    adminNotes: '',
+    activityLog: []
   },
   { 
     id: 'r-10', 
@@ -340,7 +393,8 @@ export const registrants: Registrant[] = [
     phone: '+201234567899',
     school: 'جامعة الزقازيق',
     registrationDate: '2025-01-11', 
-    status: 'تم التسليم', 
+    status: 'تم التسليم',
+    submissionStatus: 'graded',
     filesCount: 6,
     projectId: 'proj-3',
     projectTitle: 'مشروع تخرج الطلاب المتميزين',
@@ -352,7 +406,11 @@ export const registrants: Registrant[] = [
       { id: 'f-19', name: 'appendix_a.pdf', type: 'application/pdf', size: '2.1 MB', uploadDate: '2025-01-15', url: '#' },
       { id: 'f-20', name: 'appendix_b.pdf', type: 'application/pdf', size: '1.8 MB', uploadDate: '2025-01-15', url: '#' },
       { id: 'f-21', name: 'references.pdf', type: 'application/pdf', size: '0.9 MB', uploadDate: '2025-01-15', url: '#' }
-    ]
+    ],
+    grade: { score: 95, maxScore: 100, stars: 5, feedback: 'Exceptional graduation project!', gradedBy: 'Admin', gradedAt: '2025-01-16T10:00:00Z' },
+    lastActivity: '2025-01-16',
+    adminNotes: 'Top performer. Recommend for awards.',
+    activityLog: []
   },
 ];
 
