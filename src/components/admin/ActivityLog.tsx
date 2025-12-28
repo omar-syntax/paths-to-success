@@ -17,17 +17,17 @@ const actionIcons: Record<ActivityLogEntry['action'], React.ReactNode> = {
 };
 
 const actionLabels: Record<ActivityLogEntry['action'], string> = {
-  file_uploaded: 'File Uploaded',
-  status_changed: 'Status Changed',
-  rating_added: 'Rating Added',
-  rating_edited: 'Rating Edited',
-  comment_added: 'Comment Added',
-  comment_edited: 'Comment Edited',
+  file_uploaded: 'تم رفع ملف',
+  status_changed: 'تغيير الحالة',
+  rating_added: 'تمت إضافة تقييم',
+  rating_edited: 'تم تعديل التقييم',
+  comment_added: 'تمت إضافة تعليق',
+  comment_edited: 'تم تعديل التعليق',
 };
 
 function formatDateTime(dateStr: string): string {
   const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString('ar-EG', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -41,7 +41,7 @@ export function ActivityLog({ activities }: ActivityLogProps) {
     return (
       <div className="text-center py-8 text-muted-foreground">
         <RefreshCw className="w-12 h-12 mx-auto mb-2 opacity-50" />
-        <p>No activity recorded yet.</p>
+        <p>لا يوجد نشاط مسجل حتى الآن.</p>
       </div>
     );
   }
@@ -70,7 +70,7 @@ export function ActivityLog({ activities }: ActivityLogProps) {
                 {activity.description}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                By: {activity.performedBy}
+                بواسطة: {activity.performedBy}
               </p>
             </div>
           </div>

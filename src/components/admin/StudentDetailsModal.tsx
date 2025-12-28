@@ -72,7 +72,7 @@ export function StudentDetailsModal({
   }, [registrant]);
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+    return new Date(dateStr).toLocaleDateString('ar-EG', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -81,8 +81,8 @@ export function StudentDetailsModal({
 
   const handlePreviewFile = (file: UploadedFile) => {
     toast({
-      title: 'File Preview',
-      description: `Opening file: ${file.name}`,
+      title: 'معاينة الملف',
+      description: `جاري فتح الملف: ${file.name}`,
     });
     window.open(file.url, '_blank');
   };
@@ -137,7 +137,7 @@ export function StudentDetailsModal({
         <DialogContent className="max-w-4xl max-h-[90vh] p-0">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="text-xl font-bold flex items-center justify-between">
-              <span>Student Details</span>
+              <span>تفاصيل الطالب</span>
             </DialogTitle>
           </DialogHeader>
 
@@ -154,7 +154,7 @@ export function StudentDetailsModal({
                     {isAdmin && (
                       <Select value={localStatus} onValueChange={(val) => handleStatusChange(val as SubmissionStatus)}>
                         <SelectTrigger className="w-[180px] h-8 text-xs">
-                          <SelectValue placeholder="Change Status" />
+                          <SelectValue placeholder="تغيير الحالة" />
                         </SelectTrigger>
                         <SelectContent>
                           {allStatuses.map((status) => (
@@ -176,7 +176,7 @@ export function StudentDetailsModal({
                 <div className="space-y-3">
                   <h4 className="font-semibold text-foreground flex items-center gap-2">
                     <Mail className="w-4 h-4 text-primary" />
-                    Contact Information
+                    معلومات الاتصال
                   </h4>
                   <div className="bg-muted/50 rounded-lg p-3 space-y-2">
                     <div className="flex items-center gap-2 text-sm">
@@ -193,7 +193,7 @@ export function StudentDetailsModal({
                 <div className="space-y-3">
                   <h4 className="font-semibold text-foreground flex items-center gap-2">
                     <School className="w-4 h-4 text-primary" />
-                    Educational Institution
+                    المؤسسة التعليمية
                   </h4>
                   <div className="bg-muted/50 rounded-lg p-3">
                     <p className="text-sm">{registrant.school}</p>
@@ -207,14 +207,14 @@ export function StudentDetailsModal({
               <div className="space-y-3">
                 <h4 className="font-semibold text-foreground flex items-center gap-2">
                   <FileText className="w-4 h-4 text-primary" />
-                  Project Information
+                  معلومات المشروع
                 </h4>
                 <div className="bg-muted/50 rounded-lg p-4">
                   <p className="font-medium text-foreground">{registrant.projectTitle}</p>
                   <p className="text-sm text-muted-foreground mt-1">{registrant.projectTitleEn.replace(/_/g, ' ')}</p>
                   <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
                     <Calendar className="w-4 h-4" />
-                    <span>Registration Date: {formatDate(registrant.registrationDate)}</span>
+                    <span>تاريخ التسجيل: {formatDate(registrant.registrationDate)}</span>
                   </div>
                 </div>
               </div>
@@ -224,18 +224,18 @@ export function StudentDetailsModal({
               {/* Tabs for Files, Grading, Comments, Activity, Admin Notes */}
               <Tabs defaultValue="files" className="w-full">
                 <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-5' : 'grid-cols-3'}`}>
-                  <TabsTrigger value="files">Files ({registrant.uploadedFiles.length})</TabsTrigger>
-                  <TabsTrigger value="grading">Grade</TabsTrigger>
-                  <TabsTrigger value="comments">Comments ({localComments.length})</TabsTrigger>
-                  {isAdmin && <TabsTrigger value="activity">Activity Log</TabsTrigger>}
-                  {isAdmin && <TabsTrigger value="notes">Admin Notes</TabsTrigger>}
+                  <TabsTrigger value="files">الملفات ({registrant.uploadedFiles.length})</TabsTrigger>
+                  <TabsTrigger value="grading">التقييم</TabsTrigger>
+                  <TabsTrigger value="comments">التعليقات ({localComments.length})</TabsTrigger>
+                  {isAdmin && <TabsTrigger value="activity">سجل النشاط</TabsTrigger>}
+                  {isAdmin && <TabsTrigger value="notes">ملاحظات الأدمن</TabsTrigger>}
                 </TabsList>
 
                 <TabsContent value="files" className="mt-4">
                   {/* Uploaded Files */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-semibold text-foreground">Uploaded Files</h4>
+                      <h4 className="font-semibold text-foreground">الملفات المرفوعة</h4>
                       {registrant.uploadedFiles.length > 0 && (
                         <Button 
                           variant="outline" 
@@ -244,7 +244,7 @@ export function StudentDetailsModal({
                           className="gap-2"
                         >
                           <Download className="w-4 h-4" />
-                          Download All
+                          تحميل الكل
                         </Button>
                       )}
                     </div>
@@ -271,7 +271,7 @@ export function StudentDetailsModal({
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                title="Preview"
+                                title="معاينة"
                                 onClick={() => handlePreviewFile(file)}
                               >
                                 <Eye className="w-4 h-4" />
@@ -279,7 +279,7 @@ export function StudentDetailsModal({
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                title="Download PDF Report"
+                                title="تحميل تقرير PDF"
                                 onClick={() => handleDownloadClick(file)}
                               >
                                 <Download className="w-4 h-4" />
@@ -291,7 +291,7 @@ export function StudentDetailsModal({
                     ) : (
                       <div className="text-center py-8 bg-muted/30 rounded-lg">
                         <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-                        <p className="text-muted-foreground">No files uploaded yet</p>
+                        <p className="text-muted-foreground">لا توجد ملفات مرفوعة بعد</p>
                       </div>
                     )}
                   </div>

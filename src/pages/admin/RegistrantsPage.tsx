@@ -102,7 +102,7 @@ export default function RegistrantsPage() {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+    return new Date(dateStr).toLocaleDateString('ar-EG', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -110,22 +110,22 @@ export default function RegistrantsPage() {
   };
 
   const formatLastActivity = (dateStr?: string) => {
-    if (!dateStr) return 'No activity';
+    if (!dateStr) return 'لا يوجد نشاط';
     const date = new Date(dateStr);
     const now = new Date();
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays === 0) return 'اليوم';
+    if (diffDays === 1) return 'أمس';
+    if (diffDays < 7) return `منذ ${diffDays} أيام`;
     return formatDate(dateStr);
   };
 
   const handleViewDetails = (registrant: Registrant) => {
     if (user?.role !== 'admin') {
       toast({
-        title: 'Unauthorized',
-        description: 'You do not have permission to access this feature',
+        title: 'غير مصرح',
+        description: 'ليس لديك صلاحية للوصول إلى هذه الميزة',
         variant: 'destructive',
       });
       return;
@@ -142,8 +142,8 @@ export default function RegistrantsPage() {
   const handleDownloadClick = (registrant: Registrant, fileId?: string) => {
     if (user?.role !== 'admin') {
       toast({
-        title: 'Unauthorized',
-        description: 'You do not have permission to access this feature',
+        title: 'غير مصرح',
+        description: 'ليس لديك صلاحية للوصول إلى هذه الميزة',
         variant: 'destructive',
       });
       return;
@@ -151,8 +151,8 @@ export default function RegistrantsPage() {
 
     if (registrant.uploadedFiles.length === 0) {
       toast({
-        title: 'No Files',
-        description: 'This student has not uploaded any files yet',
+        title: 'لا توجد ملفات',
+        description: 'لم يقم هذا الطالب برفع أي ملفات بعد',
         variant: 'destructive',
       });
       return;
@@ -204,14 +204,14 @@ export default function RegistrantsPage() {
       }
 
       toast({
-        title: 'Grade Saved',
-        description: 'The grade has been saved successfully',
+        title: 'تم حفظ التقييم',
+        description: 'تم حفظ التقييم بنجاح',
       });
     } catch (error) {
       console.error('Error saving grade:', error);
       toast({
-        title: 'Error',
-        description: 'An error occurred while saving the grade',
+        title: 'خطأ',
+        description: 'حدث خطأ أثناء حفظ التقييم',
         variant: 'destructive',
       });
     } finally {
@@ -284,8 +284,8 @@ export default function RegistrantsPage() {
     }
 
     toast({
-      title: 'Status Updated',
-      description: `Submission status changed to ${getStatusLabel(newStatus)}`,
+      title: 'تم تحديث الحالة',
+      description: `تم تغيير حالة التقديم إلى ${getStatusLabel(newStatus)}`,
     });
   }, [selectedRegistrant?.id, toast, user?.fullName]);
 
@@ -302,18 +302,18 @@ export default function RegistrantsPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground">Registered Students</h1>
-        <p className="text-muted-foreground mt-1">View and manage student submissions</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground">الطلاب المسجلين</h1>
+        <p className="text-muted-foreground mt-1">عرض وإدارة تقديمات الطلاب</p>
       </div>
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Search by name, email, or project..."
+          placeholder="ابحث بالاسم أو البريد أو المشروع..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10 max-w-xl"
+          className="pr-10 max-w-xl"
         />
       </div>
 
@@ -323,12 +323,12 @@ export default function RegistrantsPage() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
               <Filter className="w-4 h-4" />
-              Filters
+              الفلاتر
             </CardTitle>
             {hasActiveFilters && (
               <Button variant="ghost" size="sm" onClick={clearAllFilters} className="text-xs gap-1">
                 <X className="w-3 h-3" />
-                Clear All
+                مسح الكل
               </Button>
             )}
           </div>
@@ -338,10 +338,10 @@ export default function RegistrantsPage() {
             {/* Project Filter */}
             <Select value={selectedProject} onValueChange={setSelectedProject}>
               <SelectTrigger>
-                <SelectValue placeholder="All Projects" />
+                <SelectValue placeholder="كل المشاريع" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Projects</SelectItem>
+                <SelectItem value="all">كل المشاريع</SelectItem>
                 {adminDemoProjects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
                     {project.title}
@@ -353,10 +353,10 @@ export default function RegistrantsPage() {
             {/* Status Filter */}
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
               <SelectTrigger>
-                <SelectValue placeholder="All Statuses" />
+                <SelectValue placeholder="كل الحالات" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="all">كل الحالات</SelectItem>
                 {allStatuses.map((status) => (
                   <SelectItem key={status} value={status}>
                     {getStatusLabel(status)}
@@ -368,17 +368,17 @@ export default function RegistrantsPage() {
             {/* Rating Filter */}
             <Select value={selectedRating} onValueChange={setSelectedRating}>
               <SelectTrigger>
-                <SelectValue placeholder="All Ratings" />
+                <SelectValue placeholder="كل التقييمات" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Ratings</SelectItem>
-                <SelectItem value="not_graded">Not Graded</SelectItem>
-                <SelectItem value="graded">Graded</SelectItem>
-                <SelectItem value="5">5 Stars</SelectItem>
-                <SelectItem value="4">4 Stars</SelectItem>
-                <SelectItem value="3">3 Stars</SelectItem>
-                <SelectItem value="2">2 Stars</SelectItem>
-                <SelectItem value="1">1 Star</SelectItem>
+                <SelectItem value="all">كل التقييمات</SelectItem>
+                <SelectItem value="not_graded">غير مقيّم</SelectItem>
+                <SelectItem value="graded">مقيّم</SelectItem>
+                <SelectItem value="5">5 نجوم</SelectItem>
+                <SelectItem value="4">4 نجوم</SelectItem>
+                <SelectItem value="3">3 نجوم</SelectItem>
+                <SelectItem value="2">نجمتان</SelectItem>
+                <SelectItem value="1">نجمة واحدة</SelectItem>
               </SelectContent>
             </Select>
 
@@ -411,7 +411,7 @@ export default function RegistrantsPage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            Student List ({filteredRegistrants.length})
+            قائمة الطلاب ({filteredRegistrants.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -419,22 +419,22 @@ export default function RegistrantsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Student</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Project</TableHead>
-                  <TableHead>Registration Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Grade</TableHead>
-                  <TableHead>Files</TableHead>
-                  <TableHead>Last Activity</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>الطالب</TableHead>
+                  <TableHead>البريد</TableHead>
+                  <TableHead>المشروع</TableHead>
+                  <TableHead>تاريخ التسجيل</TableHead>
+                  <TableHead>الحالة</TableHead>
+                  <TableHead>التقييم</TableHead>
+                  <TableHead>الملفات</TableHead>
+                  <TableHead>آخر نشاط</TableHead>
+                  <TableHead>الإجراءات</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredRegistrants.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
-                      No students found matching your filters.
+                      لا يوجد طلاب مطابقون للفلاتر المحددة.
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -484,7 +484,7 @@ export default function RegistrantsPage() {
                             )}
                           </div>
                         ) : (
-                          <span className="text-xs text-muted-foreground">Not graded</span>
+                          <span className="text-xs text-muted-foreground">غير مقيّم</span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -504,7 +504,7 @@ export default function RegistrantsPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            title="View Details"
+                            title="عرض التفاصيل"
                             onClick={() => handleViewDetails(registrant)}
                           >
                             <Eye className="w-4 h-4" />
@@ -512,7 +512,7 @@ export default function RegistrantsPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            title="Download Files"
+                            title="تحميل الملفات"
                             onClick={() => handleDownloadClick(registrant)}
                             disabled={registrant.filesCount === 0 && registrant.uploadedFiles.length === 0}
                           >

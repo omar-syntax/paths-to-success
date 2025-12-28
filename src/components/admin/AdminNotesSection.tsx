@@ -29,8 +29,8 @@ export function AdminNotesSection({ notes, onSaveNotes, isSaving = false }: Admi
     onSaveNotes(localNotes);
     setHasChanges(false);
     toast({
-      title: 'Notes Saved',
-      description: 'Admin notes have been saved successfully.',
+      title: 'تم الحفظ',
+      description: 'تم حفظ ملاحظات الأدمن بنجاح.',
     });
   };
 
@@ -39,23 +39,23 @@ export function AdminNotesSection({ notes, onSaveNotes, isSaving = false }: Admi
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Lock className="w-4 h-4 text-orange-500" />
-          <h4 className="font-semibold text-foreground">Private Admin Notes</h4>
+          <h4 className="font-semibold text-foreground">ملاحظات الأدمن الخاصة</h4>
         </div>
         <span className="text-xs text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-1 rounded">
-          Admin Only - Not Visible to Students
+          للأدمن فقط - غير مرئية للطلاب
         </span>
       </div>
       
       <Textarea
         value={localNotes}
         onChange={(e) => handleChange(e.target.value)}
-        placeholder="Add private notes about this student submission. These notes are only visible to administrators..."
+        placeholder="أضف ملاحظات خاصة حول هذا الطالب. هذه الملاحظات مرئية للمسؤولين فقط..."
         className="min-h-[150px] resize-none"
       />
       
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">
-          Use this space for internal remarks, follow-up actions, or any admin-only information.
+          استخدم هذه المساحة للملاحظات الداخلية أو إجراءات المتابعة أو أي معلومات خاصة بالأدمن.
         </p>
         <Button 
           onClick={handleSave} 
@@ -64,7 +64,7 @@ export function AdminNotesSection({ notes, onSaveNotes, isSaving = false }: Admi
           className="gap-2"
         >
           <Save className="w-4 h-4" />
-          {isSaving ? 'Saving...' : 'Save Notes'}
+          {isSaving ? 'جاري الحفظ...' : 'حفظ الملاحظات'}
         </Button>
       </div>
     </div>
