@@ -5,10 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { LangProvider } from "@/contexts/LangContext";
+import Chatbot from "@/components/Chatbot";
 
 // Layouts
 import { StudentLayout } from "@/components/layout/StudentLayout";
 import { AdminLayout } from "@/components/layout/AdminLayout";
+
+// Public Pages
+import Index from "@/pages/Index";
 
 // Auth Pages
 import LoginPage from "@/pages/LoginPage";
@@ -51,6 +56,7 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Public Routes */}
+      <Route path="/" element={<Index />} />
       <Route path="/login" element={user ? <Navigate to={user.role === 'admin' ? '/admin' : '/student'} /> : <LoginPage />} />
       <Route path="/signup" element={user ? <Navigate to="/student" /> : <SignupPage />} />
       
@@ -71,8 +77,7 @@ function AppRoutes() {
         <Route path="statistics" element={<StatisticsPage />} />
       </Route>
 
-      {/* Default & 404 */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -81,15 +86,18 @@ function AppRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+      <LangProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppRoutes />
+              <Chatbot />
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </LangProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
