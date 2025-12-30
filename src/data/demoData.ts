@@ -1,4 +1,5 @@
 import { Project, Registration, Notification, StatisticsData, FormField, Grade, Comment, UploadedFile, Registrant } from '@/types';
+import nanoBanana from '@/assets/nano_banana.png';
 export type { UploadedFile, Registrant };
 
 export const demoProjects: Project[] = [
@@ -33,7 +34,7 @@ export const demoProjects: Project[] = [
     requirements: 'طالب في السنة النهائية',
     startDate: '2025-01-15',
     endDate: '2025-06-30',
-    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800',
+    image: nanoBanana,
     status: 'closing-soon',
     registeredCount: 23,
     formFields: ['fullName', 'email', 'phone', 'school', 'gpa', 'cv'],
@@ -177,14 +178,14 @@ export const notifications: Notification[] = [
 // Registrant and UploadedFile types are now imported from @/types
 
 export const registrants: Registrant[] = [
-  { 
-    id: 'r-1', 
-    name: 'أحمد محمد علي', 
+  {
+    id: 'r-1',
+    name: 'أحمد محمد علي',
     nameEn: 'Ahmed_Mohamed_Ali',
-    email: 'ahmed@example.com', 
+    email: 'ahmed@example.com',
     phone: '+201234567890',
     school: 'جامعة القاهرة',
-    registrationDate: '2025-01-02', 
+    registrationDate: '2025-01-02',
     status: 'مسجل',
     submissionStatus: 'pending_review',
     filesCount: 0,
@@ -198,14 +199,14 @@ export const registrants: Registrant[] = [
       { id: 'log-1', action: 'status_changed', description: 'Student registered for the project', performedBy: 'System', performedAt: '2025-01-02T10:00:00Z' }
     ]
   },
-  { 
-    id: 'r-2', 
-    name: 'سارة عبدالله', 
+  {
+    id: 'r-2',
+    name: 'سارة عبدالله',
     nameEn: 'Sara_Abdullah',
-    email: 'sara@example.com', 
+    email: 'sara@example.com',
     phone: '+201234567891',
     school: 'جامعة عين شمس',
-    registrationDate: '2025-01-03', 
+    registrationDate: '2025-01-03',
     status: 'جاري العمل',
     submissionStatus: 'under_review',
     filesCount: 2,
@@ -225,14 +226,14 @@ export const registrants: Registrant[] = [
       { id: 'log-5', action: 'status_changed', description: 'Status changed to Under Review', performedBy: 'Admin', performedAt: '2025-01-06T15:00:00Z' }
     ]
   },
-  { 
-    id: 'r-3', 
-    name: 'محمد خالد', 
+  {
+    id: 'r-3',
+    name: 'محمد خالد',
     nameEn: 'Mohamed_Khaled',
-    email: 'mohamed@example.com', 
+    email: 'mohamed@example.com',
     phone: '+201234567892',
     school: 'الجامعة الأمريكية',
-    registrationDate: '2025-01-04', 
+    registrationDate: '2025-01-04',
     status: 'تم التسليم',
     submissionStatus: 'graded',
     filesCount: 5,
@@ -256,14 +257,14 @@ export const registrants: Registrant[] = [
       { id: 'log-9', action: 'rating_added', description: 'Grade: 92/100 (5 stars)', performedBy: 'Admin', performedAt: '2025-01-12T10:00:00Z' }
     ]
   },
-  { 
-    id: 'r-4', 
-    name: 'فاطمة حسن', 
+  {
+    id: 'r-4',
+    name: 'فاطمة حسن',
     nameEn: 'Fatma_Hassan',
-    email: 'fatma@example.com', 
+    email: 'fatma@example.com',
     phone: '+201234567893',
     school: 'جامعة الإسكندرية',
-    registrationDate: '2025-01-05', 
+    registrationDate: '2025-01-05',
     status: 'مسجل',
     submissionStatus: 'pending_review',
     filesCount: 0,
@@ -275,14 +276,14 @@ export const registrants: Registrant[] = [
     adminNotes: '',
     activityLog: []
   },
-  { 
-    id: 'r-5', 
-    name: 'عمر أحمد', 
+  {
+    id: 'r-5',
+    name: 'عمر أحمد',
     nameEn: 'Omar_Ahmed',
-    email: 'omar@example.com', 
+    email: 'omar@example.com',
     phone: '+201234567894',
     school: 'جامعة المنصورة',
-    registrationDate: '2025-01-06', 
+    registrationDate: '2025-01-06',
     status: 'جاري العمل',
     submissionStatus: 'needs_resubmission',
     filesCount: 3,
@@ -301,14 +302,14 @@ export const registrants: Registrant[] = [
       { id: 'log-11', action: 'comment_added', description: 'Feedback provided for resubmission', performedBy: 'Admin', performedAt: '2025-01-09T14:05:00Z' }
     ]
   },
-  { 
-    id: 'r-6', 
-    name: 'نورا سامي', 
+  {
+    id: 'r-6',
+    name: 'نورا سامي',
     nameEn: 'Noura_Sami',
-    email: 'noura@example.com', 
+    email: 'noura@example.com',
     phone: '+201234567895',
     school: 'جامعة حلوان',
-    registrationDate: '2025-01-07', 
+    registrationDate: '2025-01-07',
     status: 'تم التسليم',
     submissionStatus: 'graded',
     filesCount: 4,
@@ -326,14 +327,14 @@ export const registrants: Registrant[] = [
     adminNotes: '',
     activityLog: []
   },
-  { 
-    id: 'r-7', 
-    name: 'يوسف إبراهيم', 
+  {
+    id: 'r-7',
+    name: 'يوسف إبراهيم',
     nameEn: 'Youssef_Ibrahim',
-    email: 'youssef@example.com', 
+    email: 'youssef@example.com',
     phone: '+201234567896',
     school: 'جامعة الأزهر',
-    registrationDate: '2025-01-08', 
+    registrationDate: '2025-01-08',
     status: 'مسجل',
     submissionStatus: 'pending_review',
     filesCount: 0,
@@ -345,14 +346,14 @@ export const registrants: Registrant[] = [
     adminNotes: '',
     activityLog: []
   },
-  { 
-    id: 'r-8', 
-    name: 'هدى علي', 
+  {
+    id: 'r-8',
+    name: 'هدى علي',
     nameEn: 'Hoda_Ali',
-    email: 'hoda@example.com', 
+    email: 'hoda@example.com',
     phone: '+201234567897',
     school: 'جامعة طنطا',
-    registrationDate: '2025-01-09', 
+    registrationDate: '2025-01-09',
     status: 'جاري العمل',
     submissionStatus: 'under_review',
     filesCount: 1,
@@ -366,14 +367,14 @@ export const registrants: Registrant[] = [
     adminNotes: '',
     activityLog: []
   },
-  { 
-    id: 'r-9', 
-    name: 'كريم محمود', 
+  {
+    id: 'r-9',
+    name: 'كريم محمود',
     nameEn: 'Karim_Mahmoud',
-    email: 'karim@example.com', 
+    email: 'karim@example.com',
     phone: '+201234567898',
     school: 'جامعة بنها',
-    registrationDate: '2025-01-10', 
+    registrationDate: '2025-01-10',
     status: 'مسجل',
     submissionStatus: 'pending_review',
     filesCount: 0,
@@ -385,14 +386,14 @@ export const registrants: Registrant[] = [
     adminNotes: '',
     activityLog: []
   },
-  { 
-    id: 'r-10', 
-    name: 'مريم عادل', 
+  {
+    id: 'r-10',
+    name: 'مريم عادل',
     nameEn: 'Mariam_Adel',
-    email: 'mariam@example.com', 
+    email: 'mariam@example.com',
     phone: '+201234567899',
     school: 'جامعة الزقازيق',
-    registrationDate: '2025-01-11', 
+    registrationDate: '2025-01-11',
     status: 'تم التسليم',
     submissionStatus: 'graded',
     filesCount: 6,
@@ -458,33 +459,33 @@ export const formFieldsOptions: FormField[] = [
   { id: 'nationalId', label: 'الرقم القومي', category: 'basic', type: 'text' },
   { id: 'birthDate', label: 'تاريخ الميلاد', category: 'basic', type: 'date' },
   { id: 'gender', label: 'النوع', category: 'basic', type: 'select' },
-  
+
   // معلومات تعليمية
   { id: 'school', label: 'المدرسة/الجامعة', category: 'education', type: 'text' },
   { id: 'grade', label: 'الصف الدراسي/السنة', category: 'education', type: 'text' },
   { id: 'major', label: 'التخصص', category: 'education', type: 'text' },
   { id: 'gpa', label: 'المعدل التراكمي (GPA)', category: 'education', type: 'number' },
-  
+
   // معلومات إضافية
   { id: 'address', label: 'العنوان الكامل', category: 'additional', type: 'text' },
   { id: 'city', label: 'المحافظة/المدينة', category: 'additional', type: 'text' },
   { id: 'interests', label: 'الاهتمامات', category: 'additional', type: 'textarea' },
   { id: 'skills', label: 'المهارات', category: 'additional', type: 'textarea' },
   { id: 'experience', label: 'الخبرات السابقة', category: 'additional', type: 'textarea' },
-  
+
   // روابط وحسابات
   { id: 'github', label: 'رابط GitHub', category: 'links', type: 'url' },
   { id: 'linkedin', label: 'رابط LinkedIn', category: 'links', type: 'url' },
   { id: 'portfolio', label: 'رابط Portfolio', category: 'links', type: 'url' },
   { id: 'twitter', label: 'حساب Twitter/X', category: 'links', type: 'text' },
-  
+
   // ملفات مرفقة
   { id: 'photo', label: 'صورة شخصية', category: 'files', type: 'file' },
   { id: 'cv', label: 'السيرة الذاتية (PDF)', category: 'files', type: 'file' },
   { id: 'motivationLetter', label: 'خطاب التحفيز', category: 'files', type: 'file' },
   { id: 'certificates', label: 'شهادات (متعددة)', category: 'files', type: 'file' },
   { id: 'workSamples', label: 'نماذج أعمال سابقة', category: 'files', type: 'file' },
-  
+
   // أسئلة مخصصة
   { id: 'customText1', label: 'سؤال نصي قصير 1', category: 'custom', type: 'text' },
   { id: 'customText2', label: 'سؤال نصي قصير 2', category: 'custom', type: 'text' },

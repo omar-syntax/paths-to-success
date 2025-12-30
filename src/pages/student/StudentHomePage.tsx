@@ -6,24 +6,23 @@ import { Button } from '@/components/ui/button';
 import { ProjectCard } from '@/components/projects/ProjectCard';
 import { demoProjects } from '@/data/demoData';
 import { useToast } from '@/hooks/use-toast';
+import { useProjects } from '@/hooks/useProjects';
 
 export default function StudentHomePage() {
+  const { projects } = useProjects();
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'open' | 'closing-soon' | 'closed'>('all');
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const filteredProjects = demoProjects.filter(project => {
+  const filteredProjects = projects.filter(project => {
     const matchesSearch = project.title.includes(searchTerm) || project.description.includes(searchTerm);
     const matchesFilter = filter === 'all' || project.status === filter;
     return matchesSearch && matchesFilter;
   });
 
   const handleViewDetails = (projectId: string) => {
-    toast({
-      title: 'قريباً',
-      description: 'صفحة تفاصيل المشروع والتسجيل قيد التطوير',
-    });
+    navigate(`/student/project/${projectId}`);
   };
 
   return (

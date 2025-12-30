@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  FolderOpen, 
-  Users, 
+import {
+  LayoutDashboard,
+  FolderOpen,
+  Users,
   BarChart3,
-  Sun, 
-  Moon, 
-  LogOut, 
+  Sun,
+  Moon,
+  LogOut,
   Settings,
   Menu,
   X,
@@ -53,7 +53,7 @@ export function AdminNavbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/admin" className="flex items-center gap-2">
-            <img src={logo} alt="شعار المنصة" className="h-10 w-auto" />
+            <img src={logo} alt="شعار المنصة" className="h-12 w-auto" />
           </Link>
 
           {/* Desktop Nav */}
@@ -62,11 +62,10 @@ export function AdminNavbar() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                  isActive(item.path)
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${isActive(item.path)
                     ? 'bg-primary text-primary-foreground'
                     : 'text-foreground/70 hover:bg-accent hover:text-accent-foreground'
-                }`}
+                  }`}
               >
                 <item.icon className="w-4 h-4" />
                 <span>{item.label}</span>
@@ -142,11 +141,10 @@ export function AdminNavbar() {
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                    isActive(item.path)
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive(item.path)
                       ? 'bg-primary text-primary-foreground'
                       : 'text-foreground/70 hover:bg-accent'
-                  }`}
+                    }`}
                 >
                   <item.icon className="w-5 h-5" />
                   <span>{item.label}</span>

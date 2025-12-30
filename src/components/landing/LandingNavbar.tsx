@@ -21,7 +21,7 @@ const LandingNavbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo} alt="Logo" className="w-10 h-10 rounded-lg" />
+            <img src={logo} alt="Logo" className="h-12 w-auto rounded-lg" />
             <span className="font-bold text-lg hidden sm:inline">{t('platformName')}</span>
           </Link>
 
@@ -36,7 +36,7 @@ const LandingNavbar = () => {
             >
               <Globe className="w-5 h-5" />
             </Button>
-            
+
             {/* Theme Toggle */}
             <Button
               variant="ghost"
@@ -50,7 +50,7 @@ const LandingNavbar = () => {
             <Button variant="ghost" asChild>
               <Link to="/login">{t('login')}</Link>
             </Button>
-            
+
             <Button asChild className="bg-primary hover:bg-primary/90">
               <Link to="/signup">{t('signup')}</Link>
             </Button>
@@ -87,13 +87,13 @@ const LandingNavbar = () => {
                   {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </Button>
               </div>
-              
+
               <Button variant="ghost" asChild className="justify-start">
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   {t('login')}
                 </Link>
               </Button>
-              
+
               <Button asChild className="bg-primary hover:bg-primary/90">
                 <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
                   {t('signup')}

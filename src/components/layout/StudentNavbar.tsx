@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  Home, 
-  FolderOpen, 
-  Bell, 
-  Sun, 
-  Moon, 
-  LogOut, 
+import {
+  Home,
+  FolderOpen,
+  Bell,
+  Sun,
+  Moon,
+  LogOut,
   User,
   Menu,
   X
@@ -23,17 +23,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { AvatarPlaceholder } from '@/components/ui/avatar-placeholder';
 import { Badge } from '@/components/ui/badge';
-import { notifications } from '@/data/demoData';
 import logo from '@/assets/logo.webp';
+import { useNotifications } from '@/hooks/useNotifications';
+import { formatDistanceToNow } from 'date-fns';
+import { ar } from 'date-fns/locale';
 
 export function StudentNavbar() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { notifications, unreadCount, markAllAsRead, markAsRead } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleLogout = () => {
     logout();
@@ -43,7 +44,6 @@ export function StudentNavbar() {
   const navItems = [
     { path: '/student', label: 'الصفحة الرئيسية', icon: Home },
     { path: '/student/my-projects', label: 'مشاريعي', icon: FolderOpen },
-    { path: '/student/notifications', label: 'الإشعارات', icon: Bell, badge: unreadCount },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -54,7 +54,7 @@ export function StudentNavbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/student" className="flex items-center gap-2">
-            <img src={logo} alt="شعار المنصة" className="h-10 w-auto" />
+            <img src={logo} alt="شعار المنصة" className="h-12 w-auto" />
           </Link>
 
           {/* Desktop Nav */}
@@ -63,21 +63,62 @@ export function StudentNavbar() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                  isActive(item.path)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-foreground/70 hover:bg-accent hover:text-accent-foreground'
-                }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${isActive(item.path)
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-foreground/70 hover:bg-accent hover:text-accent-foreground'
+                  }`}
               >
                 <item.icon className="w-4 h-4" />
                 <span>{item.label}</span>
-                {item.badge ? (
-                  <Badge variant="destructive" className="mr-1 px-1.5 py-0.5 text-xs">
-                    {item.badge}
-                  </Badge>
-                ) : null}
               </Link>
             ))}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative flex items-center gap-2 px-4 py-2 rounded-lg">
+                  <Bell className="w-4 h-4" />
+                  <span>الإشعارات</span>
+                  {unreadCount > 0 && (
+                    <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80">
+                <div className="flex items-center justify-between p-2 border-b">
+                  <span className="font-semibold">الإشعارات</span>
+                  {unreadCount > 0 && (
+                    <Button variant="ghost" size="xs" onClick={markAllAsRead} className="text-xs h-auto py-1">
+                      تحديد الكل كمقروء
+                    </Button>
+                  )}
+                </div>
+                <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`p-3 border-b last:border-0 hover:bg-muted/50 transition-colors ${!notification.read ? 'bg-muted/30' : ''}`}
+                        onClick={() => markAsRead(notification.id)}
+                      >
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="font-medium text-sm">{notification.title}</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            {formatDistanceToNow(new Date(notification.date), { addSuffix: true, locale: ar })}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{notification.message}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-8 text-center text-muted-foreground text-sm">
+                      لا توجد إشعارات حالياً
+                    </div>
+                  )}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Actions */}
@@ -138,21 +179,28 @@ export function StudentNavbar() {
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                    isActive(item.path)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-foreground/70 hover:bg-accent'
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive(item.path)
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-foreground/70 hover:bg-accent'
+                    }`}
                 >
                   <item.icon className="w-5 h-5" />
                   <span>{item.label}</span>
-                  {item.badge ? (
-                    <Badge variant="destructive" className="mr-auto">
-                      {item.badge}
-                    </Badge>
-                  ) : null}
                 </Link>
               ))}
+              <Link
+                to="/student/notifications"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-foreground/70 hover:bg-accent"
+              >
+                <Bell className="w-5 h-5" />
+                <span>الإشعارات</span>
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="mr-auto">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </Link>
               <button
                 onClick={toggleTheme}
                 className="flex items-center gap-3 px-4 py-3 rounded-lg text-foreground/70 hover:bg-accent transition-all"

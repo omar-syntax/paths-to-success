@@ -20,6 +20,7 @@ export interface Registration {
   filesCount: number;
   grade?: Grade;
   comments?: Comment[];
+  uploadedFiles?: UploadedFile[];
 }
 
 export interface Notification {

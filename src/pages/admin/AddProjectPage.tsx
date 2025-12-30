@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useProjects } from '@/hooks/useProjects';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Check, Upload, Eye } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,14 @@ const categoryLabels: Record<string, string> = {
   custom: 'أسئلة مخصصة',
 };
 
+import { useNotifications } from '@/hooks/useNotifications';
+
 export default function AddProjectPage() {
+  const { addProject, getProject, updateProject } = useProjects();
+  const { addNotification } = useNotifications();
+  const { id } = useParams();
+  const isEditMode = !!id;
+
   const [currentStep, setCurrentStep] = useState(1);
   const [projectData, setProjectData] = useState({
     title: '',
@@ -40,6 +48,26 @@ export default function AddProjectPage() {
   const [imagePreview, setImagePreview] = useState<string | undefined>();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (isEditMode && id) {
+      const project = getProject(id);
+      if (project) {
+        setProjectData({
+          title: project.title,
+          description: project.description,
+          requirements: project.requirements || '',
+          startDate: project.startDate,
+          endDate: project.endDate,
+          image: project.image,
+        });
+        setImagePreview(project.image);
+        if (project.formFields) {
+          setSelectedFields(project.formFields);
+        }
+      }
+    }
+  }, [id, isEditMode, getProject]);
 
   const handleProjectChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setProjectData(prev => ({
@@ -70,10 +98,33 @@ export default function AddProjectPage() {
   };
 
   const handlePublish = () => {
-    toast({
-      title: 'تم نشر المشروع',
-      description: 'تم نشر المشروع بنجاح',
-    });
+    if (isEditMode && id) {
+      updateProject(id, {
+        ...projectData,
+        formFields: selectedFields,
+      });
+      toast({
+        title: 'تم التحديث',
+        description: 'تم تحديث المشروع بنجاح',
+      });
+    } else {
+      addProject({
+        ...projectData,
+        formFields: selectedFields,
+      });
+
+      // Add global notification for students
+      addNotification(
+        'مشروع جديد متاح',
+        `تم إضافة مشروع جديد: ${projectData.title}. سارع بالتسجيل الآن!`,
+        'success'
+      );
+
+      toast({
+        title: 'تم نشر المشروع',
+        description: 'تم نشر المشروع بنجاح',
+      });
+    }
     navigate('/admin/projects');
   };
 
@@ -86,8 +137,12 @@ export default function AddProjectPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground">إضافة مشروع جديد</h1>
-        <p className="text-muted-foreground mt-1">أنشئ مشروعاً جديداً وحدد حقول التسجيل</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+          {isEditMode ? 'تعديل المشروع' : 'إضافة مشروع جديد'}
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          {isEditMode ? 'تعديل بيانات المشروع وحقول التسجيل' : 'أنشئ مشروعاً جديداً وحدد حقول التسجيل'}
+        </p>
       </div>
 
       {/* Stepper */}
@@ -96,13 +151,12 @@ export default function AddProjectPage() {
           <React.Fragment key={step.id}>
             <div className="flex flex-col items-center">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-                  currentStep > step.id
-                    ? 'bg-success text-success-foreground'
-                    : currentStep === step.id
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${currentStep > step.id
+                  ? 'bg-success text-success-foreground'
+                  : currentStep === step.id
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground'
-                }`}
+                  }`}
               >
                 {currentStep > step.id ? <Check className="w-5 h-5" /> : step.id}
               </div>
@@ -298,7 +352,7 @@ export default function AddProjectPage() {
         <Card>
           <CardHeader>
             <CardTitle>معاينة نهائية</CardTitle>
-            <CardDescription>راجع بيانات المشروع قبل النشر</CardDescription>
+            <CardDescription>راجع بيانات المشروع قبل {isEditMode ? 'التحديث' : 'النشر'}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -365,7 +419,7 @@ export default function AddProjectPage() {
         ) : (
           <Button onClick={handlePublish}>
             <Check className="w-4 h-4 ml-2" />
-            نشر المشروع الآن
+            {isEditMode ? 'تحديث المشروع' : 'نشر المشروع الآن'}
           </Button>
         )}
       </div>

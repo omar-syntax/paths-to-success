@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Edit, Trash2, Eye, Lock, Unlock, Calendar, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,8 +23,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { adminDemoProjects } from '@/data/demoData';
 import { useToast } from '@/hooks/use-toast';
+import { useProjects } from '@/hooks/useProjects';
 
 const statusConfig = {
   open: { label: 'مفتوح', className: 'bg-success text-success-foreground' },
@@ -33,7 +33,7 @@ const statusConfig = {
 };
 
 export default function AdminProjectsPage() {
-  const [projects, setProjects] = useState(adminDemoProjects);
+  const { projects, updateProject, deleteProject } = useProjects();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -45,22 +45,16 @@ export default function AdminProjectsPage() {
     });
   };
 
-  const toggleStatus = (id: string) => {
-    setProjects(prev =>
-      prev.map(p =>
-        p.id === id
-          ? { ...p, status: p.status === 'closed' ? 'open' : 'closed' }
-          : p
-      )
-    );
+  const toggleStatus = (id: string, currentStatus: string) => {
+    updateProject(id, { status: currentStatus === 'closed' ? 'open' : 'closed' });
     toast({
       title: 'تم التحديث',
       description: 'تم تغيير حالة المشروع',
     });
   };
 
-  const deleteProject = (id: string) => {
-    setProjects(prev => prev.filter(p => p.id !== id));
+  const handleDelete = (id: string) => {
+    deleteProject(id);
     toast({
       title: 'تم الحذف',
       description: 'تم حذف المشروع بنجاح',
@@ -126,17 +120,27 @@ export default function AdminProjectsPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="icon" title="عرض">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="عرض"
+                            onClick={() => navigate(`/admin/projects/edit/${project.id}`)} // Reusing edit page for view for now as distinct view page not planned yet in this cycle
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" title="تعديل">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="تعديل"
+                            onClick={() => navigate(`/admin/projects/edit/${project.id}`)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
                             title={project.status === 'closed' ? 'فتح' : 'إغلاق'}
-                            onClick={() => toggleStatus(project.id)}
+                            onClick={() => toggleStatus(project.id, project.status)}
                           >
                             {project.status === 'closed' ? (
                               <Unlock className="w-4 h-4" />
@@ -160,7 +164,7 @@ export default function AdminProjectsPage() {
                               <AlertDialogFooter className="gap-2">
                                 <AlertDialogCancel>إلغاء</AlertDialogCancel>
                                 <AlertDialogAction
-                                  onClick={() => deleteProject(project.id)}
+                                  onClick={() => handleDelete(project.id)}
                                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
                                   حذف

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, FileText, Lock, Upload, Eye } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { myProjects } from '@/data/demoData';
+import { useProjects } from '@/hooks/useProjects';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { FileSubmissionModal, FileMetadata } from '@/components/student/FileSubmissionModal';
 
 const statusConfig = {
   registered: { label: 'مسجل', className: 'bg-info text-info-foreground' },
@@ -13,7 +15,15 @@ const statusConfig = {
 };
 
 export default function MyProjectsPage() {
+  const { registrations, addFileToRegistration } = useProjects();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [selectedRegistrationId, setSelectedRegistrationId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Filter out duplicate registrations for the same project if any (logic check)
+  // For now just list them all.
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('ar-EG', {
@@ -23,11 +33,40 @@ export default function MyProjectsPage() {
     });
   };
 
-  const handleAction = (action: string) => {
-    toast({
-      title: 'قريباً',
-      description: `${action} قيد التطوير`,
-    });
+  const handleViewDetails = (projectId: string) => {
+    navigate(`/student/project/${projectId}`);
+  };
+
+  const handleOpenUploadModal = (registrationId: string) => {
+    setSelectedRegistrationId(registrationId);
+    setIsModalOpen(true);
+  };
+
+  const handleFileSubmit = async (file: File, metadata: FileMetadata) => {
+    if (!selectedRegistrationId) return;
+
+    setIsSubmitting(true);
+
+    // Simulate file upload delay
+    setTimeout(() => {
+      const fileData = {
+        name: file.name,
+        size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+        type: file.type || 'application/octet-stream',
+        url: '#' // Mock URL
+      };
+
+      addFileToRegistration(selectedRegistrationId, fileData);
+
+      toast({
+        title: "تم رفع الملف بنجاح",
+        description: `تم رفع ${file.name} - ${metadata.description}`,
+      });
+
+      setIsSubmitting(false);
+      setIsModalOpen(false);
+      setSelectedRegistrationId(null);
+    }, 1500);
   };
 
   return (
@@ -37,10 +76,10 @@ export default function MyProjectsPage() {
         <p className="text-muted-foreground mt-1">المشاريع التي سجلت فيها</p>
       </div>
 
-      {myProjects.length > 0 ? (
+      {registrations && registrations.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {myProjects.map((registration, index) => {
-            const status = statusConfig[registration.status];
+          {registrations.map((registration, index) => {
+            const status = statusConfig[registration.status] || statusConfig['registered'];
             const isSubmitted = registration.status === 'submitted';
 
             return (
@@ -67,7 +106,7 @@ export default function MyProjectsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <FileText className="w-4 h-4" />
-                      <span>الملفات المرفوعة: {registration.filesCount}</span>
+                      <span>الملفات المرفوعة: {registration.filesCount || 0}</span>
                     </div>
                   </div>
 
@@ -76,7 +115,7 @@ export default function MyProjectsPage() {
                       variant="outline"
                       size="sm"
                       className="flex-1"
-                      onClick={() => handleAction('عرض التفاصيل')}
+                      onClick={() => handleViewDetails(registration.projectId)}
                     >
                       <Eye className="w-4 h-4 ml-1" />
                       التفاصيل
@@ -85,7 +124,7 @@ export default function MyProjectsPage() {
                       <Button
                         size="sm"
                         className="flex-1"
-                        onClick={() => handleAction('رفع ملفات')}
+                        onClick={() => handleOpenUploadModal(registration.id)}
                       >
                         <Upload className="w-4 h-4 ml-1" />
                         رفع ملفات
@@ -100,11 +139,18 @@ export default function MyProjectsPage() {
       ) : (
         <div className="text-center py-12">
           <p className="text-muted-foreground text-lg">لم تسجل في أي مشروع بعد</p>
-          <Button className="mt-4" onClick={() => window.location.href = '/student'}>
+          <Button className="mt-4" onClick={() => navigate('/student')}>
             استكشف المشاريع المتاحة
           </Button>
         </div>
       )}
+
+      <FileSubmissionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleFileSubmit}
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 }

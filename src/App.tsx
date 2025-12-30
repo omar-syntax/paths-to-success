@@ -24,6 +24,8 @@ import StudentHomePage from "@/pages/student/StudentHomePage";
 import MyProjectsPage from "@/pages/student/MyProjectsPage";
 import NotificationsPage from "@/pages/student/NotificationsPage";
 import ProfilePage from "@/pages/student/ProfilePage";
+import StudentProjectDetails from "@/pages/student/StudentProjectDetails";
+import StudentProjectRegistration from "@/pages/student/StudentProjectRegistration";
 
 // Admin Pages
 import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
@@ -38,15 +40,15 @@ const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: 'student' | 'admin' }) {
   const { user } = useAuth();
-  
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  
+
   if (role && user.role !== role) {
     return <Navigate to={user.role === 'admin' ? '/admin' : '/student'} replace />;
   }
-  
+
   return <>{children}</>;
 }
 
@@ -59,13 +61,15 @@ function AppRoutes() {
       <Route path="/" element={<Index />} />
       <Route path="/login" element={user ? <Navigate to={user.role === 'admin' ? '/admin' : '/student'} /> : <LoginPage />} />
       <Route path="/signup" element={user ? <Navigate to="/student" /> : <SignupPage />} />
-      
+
       {/* Student Routes */}
       <Route path="/student" element={<ProtectedRoute role="student"><StudentLayout /></ProtectedRoute>}>
         <Route index element={<StudentHomePage />} />
         <Route path="my-projects" element={<MyProjectsPage />} />
         <Route path="notifications" element={<NotificationsPage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="project/:id" element={<StudentProjectDetails />} />
+        <Route path="project/:id/register" element={<StudentProjectRegistration />} />
       </Route>
 
       {/* Admin Routes */}
@@ -73,6 +77,7 @@ function AppRoutes() {
         <Route index element={<AdminDashboardPage />} />
         <Route path="projects" element={<AdminProjectsPage />} />
         <Route path="projects/new" element={<AddProjectPage />} />
+        <Route path="projects/edit/:id" element={<AddProjectPage />} />
         <Route path="registrants" element={<RegistrantsPage />} />
         <Route path="statistics" element={<StatisticsPage />} />
       </Route>
